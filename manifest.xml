@@ -1,8 +1,8 @@
 <package version="0.0">
   <name>com.livecode.widget.navrad</name>
   <title>Navigation RAD</title>
-  <author>LiveCode</author>
-  <version>2.0.0</version>
+  <author>LiveCode and RAD mods</author>
+  <version>2.3.0</version>
   <license>community</license>
   <type>widget</type>
   <requires name="com.livecode.canvas"/>
@@ -65,10 +65,16 @@
   <metadata key="hilitedItem.label">Selected item index</metadata>
   <metadata key="hilitedItem.step">1</metadata>
   <metadata key="hilitedItem.min">0</metadata>
+  <property name="iconZoom" get="integer" set="number"/>
+  <metadata key="iconZoom.editor">com.livecode.pi.integer</metadata>
+  <metadata key="iconZoom.label">Icon Zoom %</metadata>
   <property name="hilitedItemName" get="string" set="string"/>
   <metadata key="hilitedItemName.label">Selected item name</metadata>
+  <metadata key="hilitedItemName.user_visible">false</metadata>
   <property name="preHilitedItem" get="integer" set="string"/>
+  <metadata key="preHilitedItem.user_visible">false</metadata>
   <property name="preHilitedItemName" get="string" set="string"/>
+  <metadata key="preHilitedItemName.user_visible">false</metadata>
   <property name="editMode" get="boolean" set="boolean"/>
   <metadata key="editMode.user_visible">false</metadata>
   <property name="desiredHeight" get="number"/>

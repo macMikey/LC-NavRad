@@ -25,9 +25,9 @@ preHilitedItem(property), preHilitedItemName(property),
 itemArray(property), itemIcons(property), itemLabels(property),
 itemNames(property), itemStyle(property)
 
-author: LiveCode
+author: LiveCode and RAD mods
 
-version: 2.0.0
+version: 2.1.0
 
 Name: hiliteChanged
 
@@ -386,6 +386,29 @@ References: itemLabels(property)
 
 
 
+Name: iconZoom
+
+Type: property
+
+Syntax: get the iconZoom of <widget>
+
+Syntax: set the iconZoom of <widget> to (Zoom Percent)
+
+Summary: Zoom in/out Icons
+
+Value: The percent to zoom icon (default 100)
+
+Description:
+When the Icon is generated this property will change
+the icon size by this percent.
+
+Related: IconFill (property)
+
+References: itemArray(property)
+
+
+
+
 Name: hilitedItem
 
 Type: property
@@ -426,27 +449,6 @@ be removed in future versions.
 When the <editMode> is enabled, the navigation items' icons can be
 changed by clicking on the outlined regions, and new items can be added
 with the add button.
-
-
-
-Name: desiredHeight
-
-Type: property
-
-Syntax: get the desiredHeight of <widget>
-
-Summary: The optimal height for the widget
-
-Example:
-create widget as "com.livecode.widget.navrad"
-set the height of it to the desiredHeight of it
-
-Description:
-**Note:** This feature is currently **experimental** and may change or
-be removed in future versions.
-
-Returns the preferred height for widget, calculated from its current
-state.
 
 
 
@@ -498,6 +500,27 @@ new value is not a numerically-keyed array.
 Related:
 hilitedItemIcons(property), itemIcons(property),
 itemLabels(property), itemNames(property)
+
+
+
+Name: desiredHeight
+
+Type: property
+
+Syntax: get the desiredHeight of <widget>
+
+Summary: The optimal height for the widget
+
+Example:
+create widget as "com.livecode.widget.navrad"
+set the height of it to the desiredHeight of it
+
+Description:
+**Note:** This feature is currently **experimental** and may change or
+be removed in future versions.
+
+Returns the preferred height for widget, calculated from its current
+state.
 
 
 

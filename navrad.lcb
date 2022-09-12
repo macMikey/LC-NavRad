@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2015-2016 LiveCode Ltd.icon
+Copyright (C) 2015-2022 LiveCode Ltd.icon
 
 This file is part of LiveCode.
 
@@ -143,8 +143,8 @@ use com.livecode.library.widgetutils
 --
 
 -- adding metadata to ensure the extension displays correctly in livecode
-metadata author is "LiveCode"
-metadata version is "2.0.0"
+metadata author is "LiveCode+RAD"
+metadata version is "2.3.0"
 metadata title is "Navigation RAD"
 metadata preferredSize is "320,49"
 metadata svgicon is "M3,4.2v29.5h80.2V4.2H3z M14.8,11.5c1-0.2,2.5-0.3,3.8-0.3c2.1,0,3.5,0.4,4.5,1.3c0.8,0.7,1.2,1.7,1.2,2.9	c0,2-1.3,3.4-2.9,4v0.1c1.2,0.4,1.9,1.5,2.3,3.1c0.5,2.2,0.9,3.7,1.2,4.3h-2.1c-0.3-0.4-0.6-1.8-1-3.7c-0.5-2.1-1.3-2.9-3.1-3h-1.9v6.7h-2V11.5z M16.8,18.6h2c2.1,0,3.5-1.2,3.5-2.9c0-2-1.4-2.9-3.6-2.9c-1,0-1.7,0.1-2,0.2V18.6z M39.5,22l-1.6,4.9h-2.1l5.3-15.5	h2.4l5.3,15.5h-2.1L45,22H39.5z M44.6,20.4L43,15.9c-0.3-1-0.6-1.9-0.8-2.8h0C42,14,41.7,15,41.4,15.9l-1.5,4.5H44.6z M60.8,11.5c1.2-0.2,2.7-0.3,4.3-0.3c2.9,0,4.9,0.7,6.3,1.9c1.4,1.3,2.2,3.1,2.2,5.6c0,2.5-0.8,4.6-2.2,6c-1.4,1.4-3.8,2.2-6.9,2.2	c-1.4,0-2.6-0.1-3.6-0.2V11.5z M62.8,25.2c0.5,0.1,1.2,0.1,2,0.1c4.3,0,6.6-2.4,6.6-6.6c0-3.7-2-6-6.3-6c-1,0-1.8,0.1-2.3,0.2V25.2z"
@@ -395,6 +395,26 @@ metadata hilitedItem.step is "1"
 metadata hilitedItem.min is "0"
 
 /**
+Syntax: set the iconZoom of <widget> to (Zoom Percent)
+Syntax: get the iconZoom of <widget>
+
+Summary: Zoom in/out Icons
+
+Value(integer): The percent to zoom icon (default 100)
+
+Description:
+When the Icon is generated this property will change
+the icon size by this percent.
+
+Related: IconFill (property)
+
+References: itemArray(property)
+*/
+property iconZoom	get mIconZoom 	set setNavIconZoom
+metadata iconZoom.editor is "com.livecode.pi.integer"
+metadata iconZoom.label is "Icon Zoom %"
+
+/**
 Syntax: set the hilitedItemName of <widget> to <pName>
 Syntax: get the hilitedItemName of <widget>
 
@@ -410,7 +430,10 @@ References: hilitedItem (property), hiliteChanged (message)
 */
 
 property hilitedItemName	get getNavSelectedItemName	set setNavSelectedItemName
+metadata hilitedItemName.user_visible is "false"
+/*
 metadata hilitedItemName.label is "Selected item name"
+*/
 
 /**
 Syntax: get the preHilitedItem of <widget>
@@ -428,6 +451,7 @@ Related: preHilitedItemName (property), preHiliteChanged (message)
 References: itemArray(property)
 */
 property preHilitedItem		get getPreNavSelectedItem set setPreNavSelectedItem
+metadata preHilitedItem.user_visible is "false"
 
 /**
 Syntax: get the preHilitedItemName of <widget>
@@ -443,6 +467,7 @@ highlighted item.
 References: preHilitedItem (property), preHiliteChanged (message)
 */
 property preHilitedItemName	get getPreNavSelectedItemName set setPreNavSelectedItemName
+metadata preHilitedItemName.user_visible is "false"
 
 /**
 Syntax: set the editMode of <widget> to {true | false}
@@ -501,6 +526,7 @@ metadata showBorder.label is "Show border"
 --metadata noDefault.default is "false"
 --metadata noDefault.label is "No Default"
 
+-- RAD Change add the new iconFill Property with documentation
 /**
 Syntax: set the iconFill of <widget> to {true | false}
 Syntax: get the iconFill of <widget>
@@ -519,6 +545,7 @@ property "iconFill" get mIconFill set setIconFill
 metadata iconFill.default is "false"
 metadata iconFill.label is "Icon Fill"
 
+-- RAD Change add the new autoRADHilite Property with documentation
 /**
 Syntax: set the autoRADHilite of <widget> to {true | false}
 
@@ -583,6 +610,7 @@ private variable mPreSelectedItem as Integer
 private variable mPreSelectedItemName as String
 
 private variable mSelectedItem as Integer
+private variable mIconZoom as Integer
 private variable mItemStyle as String
 
 private variable mNavItemCount as Integer
@@ -605,7 +633,11 @@ private variable mHiliteColor as Color
 private variable mShowDivide as Boolean
 private variable mShowBackground as Boolean
 --private variable mNoDefault as Boolean
+
+--RAD Change add var for iconFill
 private variable mIconFill as Boolean
+
+--RAD Change add var for autoRADHilite
 private variable mAutoRADHilite as Boolean
 
 private variable mActionPaths as Array
@@ -630,10 +662,13 @@ public handler OnSave(out rProperties as Array)
 
 	put getNavData() into rProperties["items"]
 	put mSelectedItem into rProperties["selected"]
+	put mIconZoom into rProperties["iconZoom"]
 	put mItemStyle into rProperties["itemStyle"]
 	put mShowDivide into rProperties["showBorder"]
 	--put mNoDefault into rProperties["noDefault"]
+	-- RAD Change Save the iconFill property
 	put mIconFill into rProperties["iconFill"]
+	-- RAD Change Save the autoRADHilite property
 	put mAutoRADHilite into rProperties["autoRADHilite"]
 	put mShowBackground into rProperties["opaque"]
 end handler
@@ -641,6 +676,7 @@ end handler
 public handler OnLoad(in pProperties as Array)
 	setNavData(pProperties["items"])
 	put pProperties["selected"] into mSelectedItem
+	put pProperties["iconZoom"] into mIconZoom
 	setItemStyle(pProperties["itemStyle"])
 
 	if "showBorder" is among the keys of pProperties then
@@ -654,13 +690,14 @@ public handler OnLoad(in pProperties as Array)
 	--else
 		--put true into mNoDefault
 	--end if
-
+-- RAD Change Init iconFill  Question: when does load happen?
 	if "iconFill" is among the keys of pProperties then
 		put pProperties["iconFill"] into mIconFill
 	else
 		put true into mIconFill
 	end if
 
+-- RAD Change Init autoRADHilite  Question: when does load happen?
 	if "autoRADHilite" is among the keys of pProperties then
 		put pProperties["autoRADHilite"] into mAutoRADHilite
 	else
@@ -719,6 +756,7 @@ public handler OnCreate() returns nothing
 	put tNavItems into mNavData
 
 	put 1 into mSelectedItem
+	put 100 into mIconZoom
 	put nothing into mDragData
 	put "both" into mItemStyle
 
@@ -953,6 +991,7 @@ public handler OnMouseDown() returns nothing
 
 		if tSelected >= 0 then
 			--put tSelected into mSelectedItem
+			-- RAD Change If orig then set the selected item
 			if mAutoRADHilite then
 				put tSelected into mSelectedItem
 				redraw all
@@ -963,6 +1002,7 @@ public handler OnMouseDown() returns nothing
 			else
 				put nothing into tItemLabel
 			end if
+			-- RAD Change here to send preHiliteChanged message
 			if mAutoRADHilite then
 				post "hiliteChanged"
 			else
@@ -1253,24 +1293,34 @@ private handler calculateIconRects() returns nothing
 		end if
 
 		-- Compute icon rect
-
+-- RAD Change to center/enlarge the icon if iconFill if true and then label is empty
 		if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) then
 			-- Position icons along horizontal centreline
-			put my height * kIconOnlyPaddingRatio into tIconPadding
+			put (my height * kIconOnlyPaddingRatio) into tIconPadding
 			put [tXOffset - (mBoxWidth/2), \
-					tIconPadding, \
-					tXOffset + (mBoxWidth/2), \
-					my height - tIconPadding] into tIconRectInfo
+				tIconPadding, \
+				tXOffset + (mBoxWidth/2), \
+				my height - tIconPadding] into tIconRectInfo
 		else
 			-- Position icons above text
-			put my height * kIconPaddingRatio into tIconPadding
+			put (my height * kIconPaddingRatio) into tIconPadding
 			put [tXOffset - (mBoxWidth/2), \
-					tIconPadding, \
-					tXOffset + (mBoxWidth/2), \
-					the top of tLabelRect - tIconPadding] into tIconRectInfo
+				tIconPadding, \
+				tXOffset + (mBoxWidth/2), \
+				the top of tLabelRect - tIconPadding]  into tIconRectInfo
 		end if
 
 		put rectangle tIconRectInfo into tIconRect
+
+		variable tWidthOrig as Number
+		variable tHeightOrig as Number
+		put the width of tIconRect into tWidthOrig
+		put the height of tIconRect into tHeightOrig
+		set the width of tIconRect to tWidthOrig * (mIconZoom/100)
+		set the height of tIconRect to tHeightOrig * (mIconZoom/100)
+		set the left of tIconRect to the left of tIconRect +  ((tWidthOrig - the width of tIconRect)/2)
+		set the top of tIconRect to the top of tIconRect +  ((tHeightOrig - the height of tIconRect)/2)
+--RAD Change end of iconFill icon calculateIconRects
 
 		-- Fit icons into the icon rect.  Repeat twice, once for the "normal"
 		-- icon and once for the "hilited" icon.  Note that we carry the "normal"
@@ -1540,6 +1590,7 @@ private handler setData(in pArray as Array, in pKeys as List, out rList as List)
 			end if
 		end repeat
 
+--RAD Change no "New Item" in label if iconFill is active
 		if tElement["label"] is "" then
 			if mIconFill then
 			  put "" into tElement["label"]
@@ -1837,6 +1888,7 @@ end handler
 	--redraw all
 --end handler
 
+-- RAD Change Set for now property iconFill
 private handler setIconFill(in pIconFill as Boolean) returns nothing
 	if pIconFill is mIconFill then
 		return
@@ -1859,6 +1911,18 @@ private handler setIconFill(in pIconFill as Boolean) returns nothing
 
 end handler
 
+private handler setNavIconZoom(in pIconZoom as Number) returns nothing
+if pIconZoom is mIconZoom then
+	return
+end if
+
+put pIconZoom into mIconZoom
+put true into mRecalculate
+post "dataChanged"
+redraw all
+end handler
+
+-- RAD Change Set for now property autoRADHilite
 private handler setAutoRADHilite(in pAutoRADHilite as Boolean) returns nothing
 	if pAutoRADHilite is mAutoRADHilite then
 		return
