@@ -143,8 +143,8 @@ use com.livecode.library.widgetutils
 --
 
 -- adding metadata to ensure the extension displays correctly in livecode
-metadata author is "LiveCode+RAD"
-metadata version is "2.3.0"
+metadata author is "LiveCode. Improved by RAD & mikey"
+metadata version is "2.4.0"
 metadata title is "Navigation RAD"
 metadata preferredSize is "320,49"
 metadata svgicon is "M3,4.2v29.5h80.2V4.2H3z M14.8,11.5c1-0.2,2.5-0.3,3.8-0.3c2.1,0,3.5,0.4,4.5,1.3c0.8,0.7,1.2,1.7,1.2,2.9	c0,2-1.3,3.4-2.9,4v0.1c1.2,0.4,1.9,1.5,2.3,3.1c0.5,2.2,0.9,3.7,1.2,4.3h-2.1c-0.3-0.4-0.6-1.8-1-3.7c-0.5-2.1-1.3-2.9-3.1-3h-1.9v6.7h-2V11.5z M16.8,18.6h2c2.1,0,3.5-1.2,3.5-2.9c0-2-1.4-2.9-3.6-2.9c-1,0-1.7,0.1-2,0.2V18.6z M39.5,22l-1.6,4.9h-2.1l5.3-15.5	h2.4l5.3,15.5h-2.1L45,22H39.5z M44.6,20.4L43,15.9c-0.3-1-0.6-1.9-0.8-2.8h0C42,14,41.7,15,41.4,15.9l-1.5,4.5H44.6z M60.8,11.5c1.2-0.2,2.7-0.3,4.3-0.3c2.9,0,4.9,0.7,6.3,1.9c1.4,1.3,2.2,3.1,2.2,5.6c0,2.5-0.8,4.6-2.2,6c-1.4,1.4-3.8,2.2-6.9,2.2	c-1.4,0-2.6-0.1-3.6-0.2V11.5z M62.8,25.2c0.5,0.1,1.2,0.1,2,0.1c4.3,0,6.6-2.4,6.6-6.6c0-3.7-2-6-6.3-6c-1,0-1.8,0.1-2.3,0.2V25.2z"
@@ -175,6 +175,7 @@ metadata borderColor.default is "166,166,166"
 
 ----------------------------------------------------------------
 
+	
 /**
 Syntax: set the itemArray of <widget> to <array>
 Syntax: get the itemArray of <widget>
@@ -601,6 +602,114 @@ metadata opaque.label is "Opaque background"
 
 metadata textSize.default is "10"
 
+
+
+/**
+Name: leftMargin
+
+Syntax: set the leftMargin of <widget> to integer
+Syntax: get the leftMargin of <widget>
+
+Summary: Specifies how close text within an object can come to the NavRAD's left edge
+
+Description:
+Use the leftMargin property to change the amount of blank space between the navRAD's left edge and its contents.
+The leftMargin property is equal to item 1 of its margins property.
+
+*/
+property "leftMargin" get getLeftMargin set setLeftMargin
+metadata leftMargin.default is "0"
+metadata leftMargin.editor is "com.livecode.pi.integer"
+metadata leftMargin.label is "Left Margin"
+
+
+
+/**
+Name: topMargin
+
+Syntax: set the topMargin of <widget> to integer
+Syntax: get the topMargin of <widget>
+
+Summary: Specifies how close text within an object can come to the NavRADs top edge
+
+Description:
+Use the topMargin property to change the amount of blank space between the navRAD's top edge and its contents.
+The topMargin property is equal to item 2 of its margins property.
+*/
+
+property "topMargin" get getTopMargin set setTopMargin
+metadata topMargin.default is "0"
+metadata topMargin.editor is "com.livecode.pi.integer"
+metadata topMargin.label is "Top Margin"
+
+
+
+/**
+Name: rightMargin
+
+Syntax: set the rightMargin of <widget> to integer
+Syntax: get the rightMargin of <widget>
+
+Summary: Specifies how close text within an object can come to the NavRAD's right edge
+
+Description:
+Use the rightMargin property to change the amount of blank space between an NavRAD's right edge and its contents.
+The rightMargin property is equal to item 3 of its margins property.
+
+*/
+property "rightMargin" get getRightMargin set setRightMargin
+metadata rightMargin.default is "0"
+metadata rightMargin.editor is "com.livecode.pi.integer"
+metadata rightMargin.label is "Right Margin"
+
+
+
+/**
+Name: bottomMargin
+
+Syntax: set the bottomMargin of <widget> to integer
+Syntax: get the bottomMargin of <widget>
+
+Summary: Specifies how close text within an object can come to the NavRAD''s bottom edge
+
+Description:
+Use the bottomMargin property to change the amount of blank space between an NavRADs bottom edge and its contents.
+The bottomMargin property of a field is equal to item 4 of its margins property.
+
+*/
+property "bottomMargin" get getBottomMargin set setBottomMargin
+metadata bottomMargin.default is "0"
+metadata bottomMargin.editor is "com.livecode.pi.integer"
+metadata bottomMargin.label is "Bottom Margin"
+
+
+
+/**
+Name: margins
+
+Syntax: set the margins of <widget> to integer
+Syntax: get the margins of <widget>
+
+Summary: Specifies how much empty space is left on each side between a NavRAD's edges and its contents.
+
+Description:
+Use the margins property to control how close text within a button or field can come to the NavRAD's edges.
+
+If a single integer is specified, all four margins of the object are set to that number of pixels. If four integers are provided, the object's top, left, bottom, and right margins are set to each one respectively:
+
+item 1 of the margins property is equal to the leftMargin
+item 2 of the margins is equal to the topMargin
+item 3 is equal to the rightMargin
+item 4 is equal to the bottomMargin
+
+*/
+property "margins" get getMargins set setMargins
+metadata margins.default is "0,0,0,0"
+metadata margins.user_visible is "false"
+
+
+
+
 --
 
 -- private instance variables
@@ -642,6 +751,8 @@ private variable mAutoRADHilite as Boolean
 
 private variable mActionPaths as Array
 
+private variable mMargins as List
+
 --
 
 constant kIconPaddingRatio is 0.1225
@@ -657,6 +768,8 @@ constant kDefaultNavName is "new item"
 constant kDefaultNavLabel is "New Item"
 constant kDefaultNavIconName is "circle"
 
+
+
 public handler OnSave(out rProperties as Array)
 	put the empty array into rProperties
 
@@ -671,7 +784,10 @@ public handler OnSave(out rProperties as Array)
 	-- RAD Change Save the autoRADHilite property
 	put mAutoRADHilite into rProperties["autoRADHilite"]
 	put mShowBackground into rProperties["opaque"]
+	put getMargins() into rProperties["margins"]
 end handler
+
+
 
 public handler OnLoad(in pProperties as Array)
 	setNavData(pProperties["items"])
@@ -709,7 +825,20 @@ public handler OnLoad(in pProperties as Array)
 	else
 		put true into mShowBackground
 	end if
+
+	variable tMargins as List
+	if "margins" is among the keys of pProperties then
+		split pProperties["margins"] by "," into tMargins
+		parse tMargins as list of number into mMargins
+		if mMargins is nothing then
+			put [0,0,0,0] into mMargins
+		end if
+	else
+		put [0,0,0,0] into mMargins
+	end if
 end handler
+
+
 
 public handler OnCreate() returns nothing
 	-- creating a list of navigation items
@@ -780,10 +909,13 @@ public handler OnCreate() returns nothing
 	put true into mShowBackground
 
 	put the empty array into mActionPaths
+
+	put [0,0,0,0] into mMargins
 end handler
 
-public handler OnPaint() returns nothing
 
+
+public handler OnPaint() returns nothing
 	if mRecalculate then
 		updateParameters()
 	end if
@@ -1249,6 +1381,7 @@ private handler calculateDragRow(in pY as Real) returns nothing
 		put tIconPath into mDragData["hilited_icon_path"]
 end handler
 
+
 private handler calculateIconRects() returns nothing
 	variable tNumItems as Number
 	variable tIdx as Number
@@ -1262,26 +1395,49 @@ private handler calculateIconRects() returns nothing
 	variable tLabelRect as Rectangle
 	variable tIconType as String
 	variable tIconPath as Path
+	variable tBoxWidth as Integer
+	variable tTop as Integer
+	variable tIconTop as Integer
+	variable tLabelTop as Integer
+	variable tBottom as Integer
+	variable tMargin as Integer
+	variable tEffectiveHeight as Integer
 
+	put getTopMargin() into tTop
+	put my height - getBottomMargin() into tBottom
+	put tBottom - tTop into tEffectiveHeight
+
+ 
 	put the number of elements in mNavData into tNumItems
 
 	repeat with tIdx from 1 up to tNumItems
-
 		-- Compute vertical centreline for text and icon
-		put mBoxWidth * (tIdx - 0.5) into tXOffset
 
+		put mBoxWidth * (tIdx - 0.5) into tXOffset
+		put mBoxWidth into tBoxWidth
+		if tIdx is 1 then -- margin shift right
+			put getLeftMargin() into tMargin
+			add tMargin to tXOffset
+			subtract tMargin from  tBoxWidth 
+		else if tIdx is tNumItems then -- margin shift left
+			put getRightMargin() into tMargin
+			subtract tMargin from tXOffset
+			subtract tMargin from tBoxWidth
+		end if
+		
 		-- Compute label rect
 		if mItemStyle is "text" then
 			-- Each label's effective rect is the whole of the item's box
-			put [tXOffset - mBoxWidth / 2, 0, \
-					tXOffset + mBoxWidth / 2, my height] into tLabelRectInfo
+			put [tXOffset - tBoxWidth / 2, tTop, \
+					tXOffset + tBoxWidth / 2, tBottom] into tLabelRectInfo
 
 		else
-			-- Each label is located below the corresponding icon
-			put [tXOffset - mBoxWidth / 2, \
-					my height * (1 - kLabelPaddingRatio - kLabelHeightRatio), \
-					tXOffset + mBoxWidth / 2, \
-					my height * (1 - kLabelPaddingRatio)] into tLabelRectInfo
+			-- Each label is located below the corresponding icon xxx
+			put ( tEffectiveHeight * (1 - kLabelPaddingRatio - kLabelHeightRatio) ) + tTop into tLabelTop
+			put [ tXOffset - tBoxWidth / 2, \
+					tLabelTop , \
+					tXOffset + tBoxWidth / 2, \
+					tBottom ] into tLabelRectInfo
 		end if
 
 		put rectangle tLabelRectInfo into tLabelRect
@@ -1296,17 +1452,17 @@ private handler calculateIconRects() returns nothing
 -- RAD Change to center/enlarge the icon if iconFill if true and then label is empty
 		if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) then
 			-- Position icons along horizontal centreline
-			put (my height * kIconOnlyPaddingRatio) into tIconPadding
-			put [tXOffset - (mBoxWidth/2), \
-				tIconPadding, \
-				tXOffset + (mBoxWidth/2), \
-				my height - tIconPadding] into tIconRectInfo
+			put (tEffectiveHeight * kIconOnlyPaddingRatio) into tIconPadding
+			put [tXOffset - (tBoxWidth/2), \
+				tIconPadding + tTop, \
+				tXOffset + (tBoxWidth/2), \
+				the minimum of ( tEffectiveHeight - tIconPadding ) and tBottom] into tIconRectInfo
 		else
 			-- Position icons above text
-			put (my height * kIconPaddingRatio) into tIconPadding
-			put [tXOffset - (mBoxWidth/2), \
-				tIconPadding, \
-				tXOffset + (mBoxWidth/2), \
+			put (tEffectiveHeight * kIconPaddingRatio) into tIconPadding
+			put [tXOffset - (TBoxWidth/2), \
+				tIconPadding + tTop, \
+				tXOffset + (tBoxWidth/2), \
 				the top of tLabelRect - tIconPadding]  into tIconRectInfo
 		end if
 
@@ -1348,6 +1504,7 @@ private handler calculateIconRects() returns nothing
 		end repeat
 	end repeat
 end handler
+
 
 public handler OnGeometryChanged()
 	put true into mRecalculate
@@ -1696,6 +1853,20 @@ private handler setPrimaryDataElement(in pElementName as String, \
 	redraw all
 end handler
 
+
+
+private handler stringToInt ( in pString as String ) returns optional Integer
+	-- no matter what comes in as pString, we get an integer out, 0 or otherwise. reals are truncated
+	variable rNumber as optional Integer
+	parse pString as number into rNumber
+	if rNumber is nothing then
+		put 0 into rNumber
+	else
+		put rNumber - ( rNumber mod 1 ) into rNumber -- subtract the real part to get an integer
+	end if
+	return rNumber
+end handler
+
 --------------------------------------------------------------------------------
 --
 --		Nav data handling
@@ -1941,6 +2112,83 @@ private handler setShowBackground(in pShowBackground as Boolean) returns nothing
 	redraw all
 end handler
 
+
+private handler getLeftMargin () returns Integer
+	return element 1 of mMargins
+end handler
+
+
+private handler getTopMargin () returns Integer
+	return element 2 of mMargins
+end handler
+
+
+private handler getRightMargin () returns Integer
+	return element 3 of mMargins
+end handler
+
+
+private handler getBottomMargin () returns Integer
+	return element 4 of mMargins
+end handler
+
+
+private handler getMargins () returns String
+	-- converts the margins from a list to a string and returns it, e.g. 0,0,0,0
+	variable tElement as Integer
+	variable tElementAsString as String
+	variable tMargins as String
+	put the empty string into tMargins
+	repeat for each element tElement in mMargins
+		format tElement as string into tElementAsString
+		put tElementAsString  & "," after tMargins
+	end repeat
+	delete the last char of tMargins
+	return tMargins
+end handler
+
+
+private handler setLeftMargin ( in pValue as Integer ) returns nothing
+	setMargin ( 1 , pValue )
+end handler
+
+
+private handler setTopMargin ( in pValue as Integer ) returns nothing
+	setMargin ( 2 , pValue )
+end handler
+
+
+private handler setRightMargin ( in pValue as Integer ) returns nothing
+	setMargin ( 3 , pValue )
+end handler
+
+
+private handler setBottomMargin ( in pValue as Integer ) returns nothing
+	setMargin ( 4 , pValue )
+end handler
+
+
+private handler setMargin ( in pIndex  as Integer , in pValue as Integer ) returns nothing
+	put pValue into element pIndex of mMargins
+	put true into mRecalculate
+	redraw all
+end handler
+
+
+private handler setMargins ( in pMargins as String ) returns nothing
+	-- takes a string "0,0,0,0" and sets mMargins (a list) as [0,0,0,0]
+	variable tMargins as List
+	variable tMargin as String
+	put the empty list into mMargins
+
+	split pMargins by "," into tMargins
+	repeat for each element tMargin in tMargins
+		push stringToInt ( tMargin ) onto mMargins
+	end repeat
+	put true into mRecalculate
+	redraw all
+end handler
+
 --------------------------------------------------------------------------------
 --
 --		Editable rect things
@@ -2068,6 +2316,64 @@ end handler
 private handler addEditableField(in pElement as Array)
 	-- Work around the fact that LCB currently doesn't have editable text fields
 	post "editField" with [formatRectAsString(pElement["rect"]), pElement["number"]]
+end handler
+
+
+
+--------------------------------------------------------------------------------
+--
+--		utilities
+--
+--------------------------------------------------------------------------------
+private handler Beep()
+	execute script "beep"
+end handler
+
+
+
+private handler Answer (in pPrompt as String, in pOKLabel as String, in pCancelLabel as String) returns String
+	variable tCancelClause as String
+	variable tOKClause as String
+	variable tConjunction as String
+
+	put the empty string into tConjunction
+	put the empty string into tCancelClause
+	-- <manage button labels>
+		if ( pCancelLabel is empty and pOKLabel is empty ) then
+			-- assume ok and cancel are both to be assigned
+			put "\qOK\q" into tOKClause
+			put "and" into tConjunction
+			put "\qCancel\q" into tCancelClause
+		else if pCancelLabel is empty then
+			-- ok defined, but cancel is not, so assume only ok used
+			put "\q" & pOKLabel & "\q" into tOKClause
+		else if pOKLabel is empty then
+			put "\qOK\q" into tOKClause
+			put "\q" & pCancelLabel & "\q" into tCancelClause
+		else 
+			-- both defined
+			put "\q" & pOKLabel & "\q" into tOKClause
+			put "and" into tConjunction
+			put "\q" & pCancelLabel & "\q" into tCancelClause
+		end if --pCancelLabel is empty and pOKLabel is empty
+	--</manage button labels>
+   execute script "answer \q" & pPrompt & "\q with " & tCancelClause && tConjunction && tOKClause &"; return it"
+   return the result
+end handler
+
+
+
+private handler Message ( in pPrompt as String, in pBeforeAfterInto as String ) returns nothing
+	-- can't embed a "\r" when sending over the wall into LCS, so have to have extra options like these
+	if pBeforeAfterInto is "beforeLine" then
+		execute script "put cr before msg"
+		put "before" into pBeforeAfterInto
+	else if pBeforeAfterInto is "afterLine" then
+		execute script "put cr after msg"
+		put "after" into pBeforeAfterInto
+	end if
+
+	execute script "put \q" & pPrompt & "\q" && pBeforeAfterInto && "msg"
 end handler
 
 end widget

@@ -4,6 +4,12 @@ Extending and improving the LC Nav bar
 
 
 
+## 2.4.0 2022.09.15 (mikey)
+
+* added margin properties
+
+
+
 ## 2.3.0 2022.09.12 (Ralph)
 
 * Added icon zoom
