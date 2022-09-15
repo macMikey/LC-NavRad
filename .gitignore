@@ -1,0 +1,10 @@
+
+*.lcm
+
+manifest.xml
+
+*.lci
+
+*.lce
+
+*.lcdoc
