@@ -4,6 +4,13 @@ Extending and improving the LC Nav bar
 
 
 
+## 2.4.2 2022.09.15 (mikey)
+
+* added min, max, step for zoom
+* added min for margins
+
+
+
 ## 2.4.1 2022.09.15 (mikey)
 
 * added a "step" to the margins
