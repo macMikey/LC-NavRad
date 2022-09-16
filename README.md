@@ -4,6 +4,19 @@ Extending and improving the LC Nav bar
 
 
 
+## 24.4.4 2022.09.16 (mikey)
+
+* Added **traditionalMargins** property (boolean, not visible in the property inspector). If *true*, left and right margins are applied to all items in the widget. If *false* then the left margin is only applied to the leftmost item and the right margin to the rightmost item.
+
+
+
+## 24.4.3 2022.09.15 (Ralph)
+
+* Bumped icon zoom min and max to 50 and 150
+* icon zoom default 100
+
+
+
 ## 2.4.2 2022.09.15 (mikey)
 
 * added min, max, step for zoom
