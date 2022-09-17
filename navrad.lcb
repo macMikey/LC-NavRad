@@ -144,7 +144,7 @@ use com.livecode.library.widgetutils
 
 -- adding metadata to ensure the extension displays correctly in livecode
 metadata author is "LiveCode. Improved by Ralph DiMola & mikey"
-metadata version is "2.4.4"
+metadata version is "2.5.0"
 metadata title is "Navigation RAD"
 metadata preferredSize is "320,49"
 metadata svgicon is "M3,4.2v29.5h80.2V4.2H3z M14.8,11.5c1-0.2,2.5-0.3,3.8-0.3c2.1,0,3.5,0.4,4.5,1.3c0.8,0.7,1.2,1.7,1.2,2.9	c0,2-1.3,3.4-2.9,4v0.1c1.2,0.4,1.9,1.5,2.3,3.1c0.5,2.2,0.9,3.7,1.2,4.3h-2.1c-0.3-0.4-0.6-1.8-1-3.7c-0.5-2.1-1.3-2.9-3.1-3h-1.9v6.7h-2V11.5z M16.8,18.6h2c2.1,0,3.5-1.2,3.5-2.9c0-2-1.4-2.9-3.6-2.9c-1,0-1.7,0.1-2,0.2V18.6z M39.5,22l-1.6,4.9h-2.1l5.3-15.5	h2.4l5.3,15.5h-2.1L45,22H39.5z M44.6,20.4L43,15.9c-0.3-1-0.6-1.9-0.8-2.8h0C42,14,41.7,15,41.4,15.9l-1.5,4.5H44.6z M60.8,11.5c1.2-0.2,2.7-0.3,4.3-0.3c2.9,0,4.9,0.7,6.3,1.9c1.4,1.3,2.2,3.1,2.2,5.6c0,2.5-0.8,4.6-2.2,6c-1.4,1.4-3.8,2.2-6.9,2.2	c-1.4,0-2.6-0.1-3.6-0.2V11.5z M62.8,25.2c0.5,0.1,1.2,0.1,2,0.1c4.3,0,6.6-2.4,6.6-6.6c0-3.7-2-6-6.3-6c-1,0-1.8,0.1-2.3,0.2V25.2z"
@@ -206,6 +206,10 @@ The structure of the <itemArray> is:
 		value (string) : The name of the icon to display when the item is not highlighted
 		key : "hilited_icon_name"
 		value (string) : The name of the icon to display when the item is highlighted
+		key : "manual_path"
+		value (string) : Used to manually assign a path where the name lookup is not used
+		key : "manual_hilited_path"
+		value (string) : Used to manually assign a path where the name lookup is not used
 	}
 }
 ```
@@ -216,6 +220,11 @@ the icons, and "New Item" for the label.
 
 **Note:** When setting the <itemArray>, an error will be thrown if the
 new value is not a numerically-keyed array.
+
+**Note:** If you set both an icon_name or hilited_icon_name AND an icon or
+hilited_icon (which are paths), the navRAD will overwrite the paths with the
+ones it obtains by looking up the names. To force the widget to use the paths,
+put empty into the icon_name or hilited_icon_name array elements.
 
 Related: hilitedItemIcons(property), itemIcons(property),
 itemLabels(property), itemNames(property)
@@ -896,6 +905,8 @@ public handler OnCreate() returns nothing
 	put "" into tArray["hilited_icon_name"]
 	put "" into tArray["icon"]
 	put "" into tArray["hilited_icon"]
+	put "" into tArray["manual_path"]
+	put "" into tArray["manual_hilited_path"]
 	push tArray onto tNavItems
 
 	put "favourites" into tArray["name"]
@@ -904,6 +915,9 @@ public handler OnCreate() returns nothing
 	put "" into tArray["hilited_icon_name"]
 	put "" into tArray["icon"]
 	put "" into tArray["hilited_icon"]
+	put "" into tArray["manual_path"]
+	put "" into tArray["manual_hilited_path"]
+
 	push tArray onto tNavItems
 
 	put "music" into tArray["name"]
@@ -912,6 +926,9 @@ public handler OnCreate() returns nothing
 	put "" into tArray["hilited_icon_name"]
 	put "" into tArray["icon"]
 	put "" into tArray["hilited_icon"]
+	put "" into tArray["manual_path"]
+	put "" into tArray["manual_hilited_path"]
+
 	push tArray onto tNavItems
 
 	put "search" into tArray["name"]
@@ -920,6 +937,8 @@ public handler OnCreate() returns nothing
 	put "" into tArray["hilited_icon_name"]
 	put "" into tArray["icon"]
 	put "" into tArray["hilited_icon"]
+	put "" into tArray["manual_path"]
+	put "" into tArray["manual_hilited_path"]
 	push tArray onto tNavItems
 	put the number of elements in tNavItems into mNavItemCount
 
@@ -993,6 +1012,8 @@ private handler drawNavRad() returns nothing
 	end if
 end handler
 
+
+
 private handler drawNavRadContent() returns nothing
 	variable tX as Integer
 	repeat with tX from 1 up to mNavItemCount
@@ -1036,27 +1057,31 @@ private handler drawNavRadEditMode() returns nothing
 	end if
 end handler
 
+
+
 private handler drawEditModeContent() returns nothing
 	variable tX as Integer
 	repeat with tX from 1 up to mNavItemCount
-			-- Draw the text of the nav rad
-			drawEditModeLabel(mNavData[tX]["label"], mNavData[tX]["label_rect"])
-			-- Draw the icon
-			drawIcon(mNavData[tX]["icon_path"], false)
-			-- Draw the selectedIcon
-			drawIcon(mNavData[tX]["hilited_icon_path"], true)
-			-- Draw the 'add item' item
-			drawActionItems(tX)
-			-- Draw the rects round the editable elements
-			--drawEditableRects(this canvas)
-			-- Draw the line between items
-			drawEditModeDivide(tX)
-		end repeat
+		-- Draw the text of the nav rad
+		drawEditModeLabel(mNavData[tX]["label"], mNavData[tX]["label_rect"])
+		-- Draw the icon
+		drawIcon(mNavData[tX]["icon_path"], false)
+		-- Draw the selectedIcon
+		drawIcon(mNavData[tX]["hilited_icon_path"], true)
+		-- Draw the 'add item' item
+		drawActionItems(tX)
+		-- Draw the rects round the editable elements
+		--drawEditableRects(this canvas)
+		-- Draw the line between items
+		drawEditModeDivide(tX)
+	end repeat
 
-		if mDragData is not nothing then
-			drawDragData()
-		end if
-	end handler
+	if mDragData is not nothing then
+		drawDragData()
+	end if
+end handler
+
+
 
 	private handler drawDragData()
 		if mDragData is nothing then
@@ -1089,7 +1114,9 @@ private handler drawEditModeContent() returns nothing
 		-- Draw the selectedIcon
 		drawIcon(mDragData["hilited_icon_path"], true)
 	end if
-end handler
+end handler --drawDragData
+
+
 
 private handler drawEditModeDivide(in pNumber as Number) returns nothing
 	if pNumber is mNavItemCount then
@@ -1102,6 +1129,8 @@ private handler drawEditModeDivide(in pNumber as Number) returns nothing
 	stroke tPath on this canvas
 end handler
 
+
+
 private handler drawIcon(in pIconPath as Path, in pSelected as Boolean)
 	if pSelected then
 		set the paint of this canvas to my highlight paint
@@ -1111,6 +1140,8 @@ private handler drawIcon(in pIconPath as Path, in pSelected as Boolean)
 
 	fill pIconPath on this canvas
 end handler
+
+
 
 private handler drawLabel(in pLabel as String, in pRect as Rectangle, in pSelected as Boolean)
 	if pSelected then
@@ -1123,16 +1154,22 @@ private handler drawLabel(in pLabel as String, in pRect as Rectangle, in pSelect
 	fill text pLabel at center of pRect on this canvas
 end handler
 
+
+
 private handler drawEditModeLabel(in pLabel as String, in pRect as Rectangle)
 	set the paint of this canvas to getPaint("text","editmode-fill")
 	set the font of this canvas to getFont("editmode-label")
 	fill text pLabel at left of pRect on this canvas
 end handler
 
+
+
 constant kStandardActions is ["add","delete","reorder"]
 private handler drawActionItems(in pRow as Integer)
 	drawActionItemsList(kStandardActions, pRow)
 end handler
+
+
 
 private handler drawActionItemsList(in pActions as List, in pRow as Integer)
 	variable tIconPath as Path
@@ -1145,6 +1182,8 @@ private handler drawActionItemsList(in pActions as List, in pRow as Integer)
 	end repeat
 end handler
 
+
+
 public handler OnMouseUp() returns nothing
 	variable tClickPos as Point
 	put the click position into tClickPos
@@ -1154,6 +1193,8 @@ public handler OnMouseUp() returns nothing
 		widgetClicked(tClickPos, true)
 	end if
 end handler
+
+
 
 public handler OnMouseDown() returns nothing
 	variable tClickPos as Point
@@ -1191,6 +1232,8 @@ public handler OnMouseDown() returns nothing
 	end if
 end handler
 
+
+
 public handler OnMouseMove() returns nothing
 	if mDragData is not nothing then
 		calculateDragRow(the y of the mouse position)
@@ -1203,6 +1246,8 @@ public handler OnMouseMove() returns nothing
 		return
 	end if
 end handler
+
+
 
 private handler updateParameters()
 	initialiseEditData()
@@ -1230,6 +1275,8 @@ private handler updateParameters()
 	put false into mRecalculate
 end handler
 
+
+
 private handler updateEditModeTooltip(in pPosition as Point) returns nothing
 	variable tElement as Array
 	repeat for each element tElement in mEditData
@@ -1243,6 +1290,8 @@ end repeat
 
 set property "tooltip" of my script object to ""
 end handler
+
+
 
 private handler calculateEditModeIconRects() returns nothing
 	// calculate the drawing rects
@@ -1305,7 +1354,9 @@ private handler calculateEditModeIconRects() returns nothing
 
 		calculateEditModeActionPathsForRow(tX)
 	end repeat
-end handler
+end handler --calculateEditModeIconRects
+
+
 
 private handler calculateAddItemRect()
 	calculateEditModeActionIconPaths(["add"])
@@ -1313,6 +1364,8 @@ private handler calculateAddItemRect()
 		the bounding box of mActionPaths["add_icon_path"], "Add Item", \
 		addItem, true)
 end handler
+
+
 
 private handler calculateEditModeActionPathsForRow(in pRow as Integer)
 	calculateEditModeActionIconPaths(kStandardActions)
@@ -1337,6 +1390,8 @@ private handler calculateEditModeActionPathsForRow(in pRow as Integer)
 		"Reposition Item", reorderItem, false)
 
 end handler
+
+
 
 private handler calculateEditModeActionIconPaths(in pActions as List)
 	variable tIconPath as Path
@@ -1377,6 +1432,8 @@ private handler calculateEditModeActionIconPaths(in pActions as List)
 		put tIconPath into mActionPaths["delete_icon_path"]
 	end if
 end handler
+
+
 
 private handler calculateDragRow(in pY as Real) returns nothing
 	variable tLineHeight as Real
@@ -1422,7 +1479,8 @@ private handler calculateDragRow(in pY as Real) returns nothing
 	put rectangle [tLeft + kEditModePaddingUnit, tLineTop + kEditModePaddingUnit, tLeft + tLineHeight - kEditModePaddingUnit, tLineBottom - kEditModePaddingUnit] into tIconRect
 	constrainPathToRect(tIconRect, tIconPath)
 	put tIconPath into mDragData["hilited_icon_path"]
-end handler
+end handler -- calculateDragRow
+
 
 
 private handler calculateIconRects() returns nothing
@@ -1479,7 +1537,7 @@ private handler calculateIconRects() returns nothing
 			tXOffset + tBoxWidth / 2, tBottom] into tLabelRectInfo
 
 		else
-			-- Each label is located below the corresponding icon xxx
+			-- Each label is located below the corresponding icon
 			put ( tEffectiveHeight * (1 - kLabelPaddingRatio - kLabelHeightRatio) ) + tTop into tLabelTop
 			put [ tXOffset - tBoxWidth / 2, \
 			tLabelTop , \
@@ -1496,8 +1554,8 @@ private handler calculateIconRects() returns nothing
 		end if
 
 		-- Compute icon rect
--- RAD Change to center/enlarge the icon if iconFill if true and then label is empty
-if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) then
+		-- RAD Change to center/enlarge the icon if iconFill if true and then label is empty
+		if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) then
 			-- Position icons along horizontal centreline
 			put (tEffectiveHeight * kIconOnlyPaddingRatio) into tIconPadding
 			put [tXOffset - (tBoxWidth/2), \
@@ -1523,7 +1581,7 @@ if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) the
 		set the height of tIconRect to tHeightOrig * (mIconZoom/100)
 		set the left of tIconRect to the left of tIconRect +  ((tWidthOrig - the width of tIconRect)/2)
 		set the top of tIconRect to the top of tIconRect +  ((tHeightOrig - the height of tIconRect)/2)
---RAD Change end of iconFill icon calculateIconRects
+		--RAD Change end of iconFill icon calculateIconRects
 
 		-- Fit icons into the icon rect.  Repeat twice, once for the "normal"
 		-- icon and once for the "hilited" icon.  Note that we carry the "normal"
@@ -1532,7 +1590,9 @@ if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) the
 		put the empty path into tIconPath
 		repeat for each element tIconType in ["icon","hilited_icon"]
 			-- Update icon path
-			if mNavData[tIdx][tIconType & "_name"] is not empty then
+			if mNavData[tIdx]["manual_path"] is not empty then
+				put mNavData[tIdx]["manual_path"] into mNavData[tIdx][tIconType]
+			else if mNavData[tIdx][tIconType & "_name"] is not empty then
 				put iconSVGPathFromName(mNavData[tIdx][tIconType & "_name"]) \
 				into mNavData[tIdx][tIconType]
 			else
@@ -1548,14 +1608,17 @@ if mItemStyle is "icons" or (mNavData[tIdx]["label"] is empty and mIconFill) the
 
 			put tIconPath into mNavData[tIdx][tIconType & "_path"]
 			put tIconRect into mNavData[tIdx][tIconType & "_rect"]
-		end repeat
-	end repeat
-end handler
+		end repeat --for each element tIconType in ["icon","hilited_icon"]
+	end repeat --with tIdx from 1 up to tNumItems
+end handler --calculateIconRects
+
 
 
 public handler OnGeometryChanged()
 	put true into mRecalculate
 end handler
+
+
 
 --Callback when an icon is selected from the icon picker widget
 public handler iconSelected(in pSelectedIcon as optional any, in pType as String, in pNumber as Number)
@@ -1580,6 +1643,8 @@ public handler iconSelected(in pSelectedIcon as optional any, in pType as String
 	end if
 end handler
 
+
+
 private handler clickPosToComponent(in pClickPos as Point) returns Integer
 	variable tX as Integer
 	repeat with tX from 1 up to mNavItemCount
@@ -1593,9 +1658,13 @@ end repeat
 return 0
 end handler
 
+
+
 private handler locToNavItem(in pLoc as Point) returns Integer
 	return the floor of (the x of pLoc / mBoxWidth) + 1
 end handler
+
+
 
 private handler yPosToLine(in pY as Number) returns Integer
 	variable tLineHeight as Real
@@ -1603,14 +1672,20 @@ private handler yPosToLine(in pY as Number) returns Integer
 	return the floor of (pY / tLineHeight) + 1
 end handler
 
+
+
 public handler setHiliteColor(in pColor as String) returns nothing
 	put stringToColor(pColor) into mHiliteColor
 	redraw all
 end handler
 
+
+
 public handler getHiliteColor() returns String
 	return colorToString(mHiliteColor, false)
 end handler
+
+
 
 public handler getPath(in pObject as String) returns Path
 	variable tRect
@@ -1624,6 +1699,8 @@ public handler getPath(in pObject as String) returns Path
 		return rectangle path of rectangle [the left of tRect + 0.5, the top of tRect + 1, the right of tRect - 0.5, the bottom of tRect - 0.5]
 	end if
 end handler
+
+
 
 public handler getPaint(pLocation, pType) returns Paint
 	if pLocation is "background" then
@@ -1659,9 +1736,13 @@ public handler getPaint(pLocation, pType) returns Paint
 	return solid paint with color [1, 100/255, 200/255]
 end handler
 
+
+
 private handler getFont(in pType as String) returns Font
 	return my font
 end handler
+
+
 
 public handler setNavSelectedItem(in pSelectedItem as Integer) returns nothing
 	if pSelectedItem is not mSelectedItem and \
@@ -1675,21 +1756,31 @@ public handler setNavSelectedItem(in pSelectedItem as Integer) returns nothing
 end if
 end handler
 
+
+
 public handler getPreNavSelectedItemName() returns String
 	return mPreSelectedItemName
 end handler
+
+
 
 public handler setPreNavSelectedItemName(in pName as String) returns nothing
 
 end handler
 
+
+
 public handler getPreNavSelectedItem() returns Integer
 	return mPreSelectedItem
 end handler
 
+
+
 public handler setPreNavSelectedItem(in pName as String) returns nothing
 
 end handler
+
+
 
 
 public handler setNavSelectedItemName(in pName as String) returns nothing
@@ -1709,9 +1800,13 @@ end repeat
 
 end handler
 
+
+
 public handler getNavSelectedItemName() returns String
 	return mNavData[mSelectedItem]["name"]
 end handler
+
+
 
 public handler setItemStyle(in pItemStyle as String) returns nothing
 	-- Cope with old-style item style property values
@@ -1726,6 +1821,8 @@ public handler setItemStyle(in pItemStyle as String) returns nothing
 	put true into mRecalculate
 	redraw all
 end handler
+
+
 
 public handler setEditMode(in pEditMode as Boolean) returns nothing
 	put pEditMode into mEditMode
@@ -1747,16 +1844,18 @@ private handler listToArray(in pList as List) returns Array
 
 	variable tKey as String
 	repeat with tCount from 1 up to the number of elements in pList
-	put tCount formatted as string into tKey
-	put defaultNavArray() into tArray[tKey]
+		put tCount formatted as string into tKey
+		put defaultNavArray() into tArray[tKey]
 
-	variable tAttribute as String
-	repeat for each key tAttribute in tArray[tKey]
-	put pList[tCount][tAttribute] into tArray[tKey][tAttribute]
-end repeat
-end repeat
-return tArray
+		variable tAttribute as String
+		repeat for each key tAttribute in tArray[tKey]
+			put pList[tCount][tAttribute] into tArray[tKey][tAttribute]
+		end repeat
+	end repeat
+	return tArray
 end handler
+
+
 
 private handler setData(in pArray as Array, in pKeys as List, out rList as List)
 	-- Excessive hoop-jumping to work around the fact that keys of numerically keyed LCS array
@@ -1770,22 +1869,22 @@ private handler setData(in pArray as Array, in pKeys as List, out rList as List)
 	put the empty array into tLookup
 	variable tNumericKey as Number
 	repeat for each key tKey in pArray
-	put tKey parsed as number into tNumericKey
-	push tNumericKey onto tOrder
-	put tKey into tLookup[tNumericKey formatted as string]
-end repeat
-sort tOrder in ascending numeric order
+		put tKey parsed as number into tNumericKey
+		push tNumericKey onto tOrder
+		put tKey into tLookup[tNumericKey formatted as string]
+	end repeat
+	sort tOrder in ascending numeric order
 
-variable tOrderKey
-variable tElement as Array
-variable tList as List
-put the empty list into tList
+	variable tOrderKey
+	variable tElement as Array
+	variable tList as List
+	put the empty list into tList
 
-variable tOriginalKey as String
-repeat for each element tOrderKey in tOrder
-put the empty array into tElement
-repeat for each element tKey in pKeys
-put tLookup[tOrderKey formatted as string] into tOriginalKey
+	variable tOriginalKey as String
+	repeat for each element tOrderKey in tOrder
+		put the empty array into tElement
+		repeat for each element tKey in pKeys
+			put tLookup[tOrderKey formatted as string] into tOriginalKey
 			-- Use default item if key is not present
 			if tKey is among the keys of pArray[tOriginalKey] then
 				put pArray[tOriginalKey][tKey] into tElement[tKey]
@@ -1794,14 +1893,14 @@ put tLookup[tOrderKey formatted as string] into tOriginalKey
 			end if
 		end repeat
 
---RAD Change no "New Item" in label if iconFill is active
-if tElement["label"] is "" then
-	if mIconFill then
-		put "" into tElement["label"]
-	else
-		put "New Item" into tElement["label"]
-	end if
-end if
+		--RAD Change no "New Item" in label if iconFill is active
+		if tElement["label"] is "" then
+			if mIconFill then
+				put "" into tElement["label"]
+			else
+				put "New Item" into tElement["label"]
+			end if
+		end if --tElement["label"] is ""
 
 		-- If the selected icon is the same as the icon, just put empty into the selected icon name
 		-- that way, when the icon is changed, the selected icon will change too.
@@ -1809,10 +1908,12 @@ end if
 			put "" into tElement["hilited_icon_name"]
 		end if
 		push tElement onto tList
-	end repeat
+	end repeat --for each element tOrderKey in tOrder
 
 	put tList into rList
-end handler
+end handler --setData
+
+
 
 private handler getDataElement(in pElementName as String, in pList as List) returns String
 	variable tList
@@ -1820,13 +1921,15 @@ private handler getDataElement(in pElementName as String, in pList as List) retu
 
 	variable tElement
 	repeat for each element tElement in pList
-	push tElement[pElementName] onto tList
-end repeat
+		push tElement[pElementName] onto tList
+	end repeat
 
-variable tElements
-combine tList with "," into tElements
-return tElements
+	variable tElements
+	combine tList with "," into tElements
+	return tElements
 end handler
+
+
 
 private handler setDataElement(in pElementName as String, in pElements as String, in pDefaultArray as Array, inout xList as List)
 	variable tElements
@@ -1837,67 +1940,69 @@ private handler setDataElement(in pElementName as String, in pElements as String
 
 	variable tElement
 	repeat for each element tElement in xList
-	add 1 to tCount
-	if tCount > the number of elements in tElements then
-		put pDefaultArray[pElementName] into xList[tCount][pElementName]
-	else
-		put tElements[tCount] into xList[tCount][pElementName]
-	end if
-end repeat
+		add 1 to tCount
+		if tCount > the number of elements in tElements then
+			put pDefaultArray[pElementName] into xList[tCount][pElementName]
+		else
+			put tElements[tCount] into xList[tCount][pElementName]
+		end if
+	end repeat
 
 	// If we there are more of the given element than there are items, generate more
 	add 1 to tCount
 	repeat with tCount from tCount up to the number of elements in tElements
-	push pDefaultArray onto xList
-	put tElements[tCount] into xList[tCount][pElementName]
-end repeat
+		push pDefaultArray onto xList
+		put tElements[tCount] into xList[tCount][pElementName]
+	end repeat
 
-put true into mRecalculate
-post "navDataChanged"
-redraw all
+	put true into mRecalculate
+	post "navDataChanged"
+	redraw all
 end handler
+
+
 
 -- Only the primary data element ("name" for both actions and nav) can *reduce*
 -- the number of elements in the data list.
 private handler setPrimaryDataElement(in pElementName as String, \
 	in pElements as String, in pUnique as Boolean, \
 	in pDefaultArray as Array, inout xList as List)
-variable tElements as List
-variable tElement as String
-variable tCount as Number
+	variable tElements as List
+	variable tElement as String
+	variable tCount as Number
 
-split pElements by "," into tElements
+	split pElements by "," into tElements
 
-	-- Enforce uniqueness, if requested
+		-- Enforce uniqueness, if requested
 	if pUnique then
 		put 0 into tCount
 		repeat with tCount from 1 up to the number of elements in tElements
-		if the index of tElements[tCount] after tCount in tElements is not 0 then
-			throw "duplicate" && pElementName && tElements[tCount]
-			return
+			if the index of tElements[tCount] after tCount in tElements is not 0 then
+				throw "duplicate" && pElementName && tElements[tCount]
+				return
+			end if
+		end repeat
+	end if
+
+	put 0 into tCount
+	repeat for each element tElement in tElements
+		add 1 to tCount
+		if tCount > the number of elements in xList then
+			push pDefaultArray onto xList
 		end if
+
+		put tElement into xList[tCount][pElementName]
 	end repeat
-end if
-
-put 0 into tCount
-repeat for each element tElement in tElements
-add 1 to tCount
-if tCount > the number of elements in xList then
-	push pDefaultArray onto xList
-end if
-
-put tElement into xList[tCount][pElementName]
-end repeat
 
 	// If we there are more items than there are primary elements, pop them off.
 	add 1 to tCount
 	repeat with tCount from tCount up to the number of elements in xList
-	pop xList
-end repeat
+		pop xList
+	end repeat
 
-put true into mRecalculate
-post "dataChanged"
-redraw all
+	put true into mRecalculate
+	post "dataChanged"
+	redraw all
 end handler
 
 
@@ -1937,6 +2042,8 @@ private handler defaultNavElement(in pKey as String) returns String
 	return ""
 end handler
 
+
+
 private handler defaultNavArray() returns Array
 	variable tArray as Array
 	put the empty array into tArray
@@ -1946,8 +2053,12 @@ private handler defaultNavArray() returns Array
 	put "" into tArray["hilited_icon_name"]
 	put "" into tArray["icon"]
 	put "" into tArray["hilited_icon"]
+	put "" into tArray["manual_path"]
+	put "" into tArray["manual_hilited_path"]
 	return tArray
 end handler
+
+
 
 private handler navDataDifferent(in pLeft as List, in pRight as List) returns Boolean
 	if the number of elements in pLeft is not the number of elements in pRight then
@@ -1956,26 +2067,34 @@ private handler navDataDifferent(in pLeft as List, in pRight as List) returns Bo
 
 	variable tIndex as Number
 	repeat with tIndex from 1 up to the number of elements in pLeft
-	if pLeft[tIndex]["label"] is not pRight[tIndex]["label"] then
-		return true
-	end if
-
-	if pLeft[tIndex]["icon_name"] is not pRIght[tIndex]["icon_name"] then
-		return true
-	end if
-
-	if pLeft[tIndex]["hilited_icon_name"] is not pRight[tIndex]["hilited_icon_name"] then
-		if not (pLeft[tIndex]["hilited_icon_name"] is "" and pRight[tIndex]["hilited_icon_name"] is pRight[tIndex]["icon_name"]) and not (pLeft[tIndex]["hilited_icon_name"] is pLeft[tIndex]["icon_name"] and pRight[tIndex]["hilited_icon_name"] is "") then
+		if pLeft[tIndex]["label"] is not pRight[tIndex]["label"] then
 			return true
 		end if
-	end if
-end repeat
-return false
+
+		if pLeft[tIndex]["icon_name"] is not pRIght[tIndex]["icon_name"] then
+			return true
+		end if
+
+		if pLeft[tIndex]["hilited_icon_name"] is not pRight[tIndex]["hilited_icon_name"] then
+			if not (pLeft[tIndex]["hilited_icon_name"] is "" and pRight[tIndex]["hilited_icon_name"] is pRight[tIndex]["icon_name"]) and not (pLeft[tIndex]["hilited_icon_name"] is pLeft[tIndex]["icon_name"] and pRight[tIndex]["hilited_icon_name"] is "") then
+				return true
+			end if
+		end if
+
+		if pLeft[tIndex]["manual_path"] is not pRight[tIndex]["manual_path"] or pLeft[tIndex]["manual_hilited_path"] is not pRight[tIndex]["manual_hilited_path"] then
+			return true
+		end if
+	end repeat
+	return false
 end handler
+
+
 
 private handler getNavData() returns Array
 	return listToArray(mNavData)
 end handler
+
+
 
 private handler setNavData(in pNavData as Array)
 	variable tNavData as List
@@ -1988,37 +2107,55 @@ private handler setNavData(in pNavData as Array)
 	end if
 end handler
 
+
+
 private handler getNavNames() returns String
 	return getDataElement("name", mNavData)
 end handler
+
+
 
 private handler setNavNames(in pNames as String)
 	setPrimaryDataElement("name", pNames, true, defaultNavArray(), mNavData)
 end handler
 
+
+
 private handler getNavIcons() returns String
 	return getDataElement("icon_name", mNavData)
 end handler
+
+
 
 private handler setNavIcons(in pIcons as String)
 	setDataElement("icon_name", pIcons, defaultNavArray(), mNavData)
 end handler
 
+
+
 private handler getNavSelectedIcons() returns String
 	return getDataElement("hilited_icon_name", mNavData)
 end handler
+
+
 
 private handler setNavSelectedIcons(in pIcons as String)
 	setDataElement("hilited_icon_name", pIcons, defaultNavArray(), mNavData)
 end handler
 
+
+
 private handler getNavLabels() returns String
 	return getDataElement("label", mNavData)
 end handler
 
+
+
 private handler setNavLabels(in pLabels as String)
 	setDataElement("label", pLabels, defaultNavArray(), mNavData)
 end handler
+
+
 
 private handler addItem(in pItem as Number)
 	if mNavData is [] then
@@ -2031,12 +2168,16 @@ private handler addItem(in pItem as Number)
 	redraw all
 end handler
 
+
+
 private handler deleteItem(in pItem as Number)
 	delete element pItem of mNavData
 	put true into mRecalculate
 	post "dataChanged"
 	redraw all
 end handler
+
+
 
 private handler moveItem(in pFrom as Number, in pTo as Number) returns nothing
 	-- Do nothing if this isn't really a move.
@@ -2056,6 +2197,8 @@ private handler moveItem(in pFrom as Number, in pTo as Number) returns nothing
 	put true into mRecalculate
 end handler
 
+
+
 private handler reorderItem(in pItem as Number)
 	put {} into mDragData
 	put the y of the mouse position - ((pItem - 1) * kEditModeLineHeight) into mDragData["offset"]
@@ -2063,6 +2206,8 @@ private handler reorderItem(in pItem as Number)
 	put mNavData[pItem]["label"] into mDragData["label"]
 	redraw all
 end handler
+
+
 
 private handler dragDrop() returns nothing
 	if mDragData is nothing then
@@ -2080,6 +2225,8 @@ private handler dragDrop() returns nothing
 	end if
 end handler
 
+
+
 private handler getDesiredHeight() returns Number
 	if mEditMode and mNavItemCount is not 0 then
 		return kEditModeLineHeight * mNavItemCount
@@ -2087,6 +2234,8 @@ private handler getDesiredHeight() returns Number
 
 	return kEditModeLineHeight
 end handler
+
+
 
 private handler setShowDivide(in pShowDivide as Boolean) returns nothing
 	if pShowDivide is mShowDivide then
@@ -2096,6 +2245,8 @@ private handler setShowDivide(in pShowDivide as Boolean) returns nothing
 	put pShowDivide into mShowDivide
 	redraw all
 end handler
+
+
 
 --private handler setNoDefault(in pNoDefault as Boolean) returns nothing
 	--if pNoDefault is mNoDefault then
@@ -2129,6 +2280,8 @@ private handler setIconFill(in pIconFill as Boolean) returns nothing
 
 end handler
 
+
+
 private handler setNavIconZoom(in pIconZoom as Number) returns nothing
 	if pIconZoom is mIconZoom then
 		return
@@ -2140,6 +2293,8 @@ private handler setNavIconZoom(in pIconZoom as Number) returns nothing
 	redraw all
 end handler
 
+
+
 -- RAD Change Set for now property autoRADHilite
 private handler setAutoRADHilite(in pAutoRADHilite as Boolean) returns nothing
 	if pAutoRADHilite is mAutoRADHilite then
@@ -2149,6 +2304,8 @@ private handler setAutoRADHilite(in pAutoRADHilite as Boolean) returns nothing
 	put pAutoRADHilite into mAutoRADHilite
 	redraw all
 end handler
+
+
 
 private handler setShowBackground(in pShowBackground as Boolean) returns nothing
 	if pShowBackground is mShowBackground then
@@ -2160,9 +2317,11 @@ private handler setShowBackground(in pShowBackground as Boolean) returns nothing
 end handler
 
 
+
 private handler getLeftMargin () returns Integer
 	return element 1 of mMargins
 end handler
+
 
 
 private handler getTopMargin () returns Integer
@@ -2170,14 +2329,17 @@ private handler getTopMargin () returns Integer
 end handler
 
 
+
 private handler getRightMargin () returns Integer
 	return element 3 of mMargins
 end handler
 
 
+
 private handler getBottomMargin () returns Integer
 	return element 4 of mMargins
 end handler
+
 
 
 private handler getMargins () returns String
@@ -2187,12 +2349,13 @@ private handler getMargins () returns String
 	variable tMargins as String
 	put the empty string into tMargins
 	repeat for each element tElement in mMargins
-	format tElement as string into tElementAsString
-	put tElementAsString  & "," after tMargins
-end repeat
-delete the last char of tMargins
-return tMargins
+		format tElement as string into tElementAsString
+		put tElementAsString  & "," after tMargins
+	end repeat
+	delete the last char of tMargins
+	return tMargins
 end handler
+
 
 
 private handler setLeftMargin ( in pValue as Integer ) returns nothing
@@ -2200,9 +2363,11 @@ private handler setLeftMargin ( in pValue as Integer ) returns nothing
 end handler
 
 
+
 private handler setTopMargin ( in pValue as Integer ) returns nothing
 	setMargin ( 2 , pValue )
 end handler
+
 
 
 private handler setRightMargin ( in pValue as Integer ) returns nothing
@@ -2210,9 +2375,11 @@ private handler setRightMargin ( in pValue as Integer ) returns nothing
 end handler
 
 
+
 private handler setBottomMargin ( in pValue as Integer ) returns nothing
 	setMargin ( 4 , pValue )
 end handler
+
 
 
 private handler setMargin ( in pIndex  as Integer , in pValue as Integer ) returns nothing
@@ -2220,6 +2387,7 @@ private handler setMargin ( in pIndex  as Integer , in pValue as Integer ) retur
 	put true into mRecalculate
 	redraw all
 end handler
+
 
 
 private handler setMargins ( in pMargins as String ) returns nothing
@@ -2235,6 +2403,7 @@ private handler setMargins ( in pMargins as String ) returns nothing
 	put true into mRecalculate
 	redraw all
 end handler
+
 
 
 private handler setTraditionalMargins ( in pBool as Boolean ) returns nothing
@@ -2254,33 +2423,38 @@ end handler
 --------------------------------------------------------------------------------
 
 handler type PopupCallback(in pPopupResult as optional any, in pType as String, in pNumber as Number)
-	handler type ActionCallback(in pNumber as Number)
+handler type ActionCallback(in pNumber as Number)
 
-		private variable mEditData as Array
+private variable mEditData as Array
 
-		public handler initialiseEditData()
-			put the empty array into mEditData
-		end handler
 
-		public handler setEditableRect(in pComponent as String, in pNumber as Number, \
-			in pRect as Rectangle, in pTooltip as String, in pPopup as String, \
-			in pCallback as PopupCallback)
-		variable tComponentID as String
-		put pComponent && pNumber formatted as string into tComponentID
+public handler initialiseEditData()
+	put the empty array into mEditData
+end handler
 
-		put the empty array into mEditData[tComponentID]
 
-		put pRect into mEditData[tComponentID]["rect"]
-		put pTooltip into mEditData[tComponentID]["tooltip"]
-		put pPopup into mEditData[tComponentID]["popup"]
-		put pCallback into mEditData[tComponentID]["callback"]
-		put pComponent into mEditData[tComponentID]["type"]
-		put pNumber into mEditData[tComponentID]["number"]
-		put true into mEditData[tComponentID]["mouseup"]
-	end handler
 
-	public handler setEditableTextRect(in pComponent as String, \
-		in pNumber as Number, in pRect as Rectangle, in pTooltip as String)
+public handler setEditableRect(in pComponent as String, in pNumber as Number, \
+	in pRect as Rectangle, in pTooltip as String, in pPopup as String, \
+	in pCallback as PopupCallback)
+	variable tComponentID as String
+	put pComponent && pNumber formatted as string into tComponentID
+
+	put the empty array into mEditData[tComponentID]
+
+	put pRect into mEditData[tComponentID]["rect"]
+	put pTooltip into mEditData[tComponentID]["tooltip"]
+	put pPopup into mEditData[tComponentID]["popup"]
+	put pCallback into mEditData[tComponentID]["callback"]
+	put pComponent into mEditData[tComponentID]["type"]
+	put pNumber into mEditData[tComponentID]["number"]
+	put true into mEditData[tComponentID]["mouseup"]
+end handler
+
+
+
+public handler setEditableTextRect(in pComponent as String, \
+	in pNumber as Number, in pRect as Rectangle, in pTooltip as String)
 	variable tComponentID as String
 	put pComponent && pNumber formatted as string into tComponentID
 
@@ -2293,29 +2467,35 @@ handler type PopupCallback(in pPopupResult as optional any, in pType as String, 
 	put true into mEditData[tComponentID]["mouseup"]
 end handler
 
+
+
 public handler setActionRect(in pComponent as String, in pNumber as Number, \
 	in pRect as Rectangle, in pTooltip as String, \
 	in pAction as ActionCallback, in pMouseUp as Boolean)
-variable tComponentID as String
-put pComponent && pNumber formatted as string into tComponentID
+	variable tComponentID as String
+	put pComponent && pNumber formatted as string into tComponentID
 
-put the empty array into mEditData[tComponentID]
+	put the empty array into mEditData[tComponentID]
 
-put pRect into mEditData[tComponentID]["rect"]
-put pTooltip into mEditData[tComponentID]["tooltip"]
-put pComponent into mEditData[tComponentID]["type"]
-put pNumber into mEditData[tComponentID]["number"]
-put pAction into mEditData[tComponentID]["action"]
-put pMouseUp into mEditData[tComponentID]["mouseup"]
+	put pRect into mEditData[tComponentID]["rect"]
+	put pTooltip into mEditData[tComponentID]["tooltip"]
+	put pComponent into mEditData[tComponentID]["type"]
+	put pNumber into mEditData[tComponentID]["number"]
+	put pAction into mEditData[tComponentID]["action"]
+	put pMouseUp into mEditData[tComponentID]["mouseup"]
 end handler
+
+
 
 public handler drawEditableRects(in pCanvas as Canvas)
 	variable tElement as Array
 	repeat for each element tElement in mEditData
-	set the paint of pCanvas to solid paint with color [0,0,0]
-	stroke rectangle path of tElement["rect"] on pCanvas
-end repeat
+		set the paint of pCanvas to solid paint with color [0,0,0]
+		stroke rectangle path of tElement["rect"] on pCanvas
+	end repeat
 end handler
+
+
 
 private handler widgetClicked(in pClickPosition as Point, in pMouseUp as Boolean)
 	if pMouseUp then
@@ -2324,17 +2504,19 @@ private handler widgetClicked(in pClickPosition as Point, in pMouseUp as Boolean
 
 	variable tElement as Array
 	repeat for each element tElement in mEditData
-	if tElement["mouseup"] is pMouseUp and pClickPosition is within tElement["rect"] then
-		if "popup" is among the keys of tElement then
-			doPopup(pClickPosition, tElement)
-		else if "action" is among the keys of tElement then
-			doAction(tElement)
-		else
-			addEditableField(tElement)
+		if tElement["mouseup"] is pMouseUp and pClickPosition is within tElement["rect"] then
+			if "popup" is among the keys of tElement then
+				doPopup(pClickPosition, tElement)
+			else if "action" is among the keys of tElement then
+				doAction(tElement)
+			else
+				addEditableField(tElement)
+			end if
 		end if
-	end if
-end repeat
+	end repeat
 end handler
+
+
 
 private handler doPopup(in pClickPos as Point, in pArray as Array)
 	variable tResult
@@ -2356,11 +2538,15 @@ private handler doPopup(in pClickPos as Point, in pArray as Array)
 	tCallback(tResult, pArray["type"], pArray["number"])
 end handler
 
+
+
 private handler doAction(in pArray as Array)
 	variable tCallback as ActionCallback
 	put pArray["action"] into tCallback
 	tCallback(pArray["number"])
 end handler
+
+
 
 private handler formatRectAsString(in pRect as Rectangle)
 	variable tResult as String
@@ -2370,6 +2556,8 @@ private handler formatRectAsString(in pRect as Rectangle)
 	put "," & (the bottom of pRect) formatted as string after tResult
 	return tResult
 end handler
+
+
 
 private handler addEditableField(in pElement as Array)
 	-- Work around the fact that LCB currently doesn't have editable text fields
@@ -2397,7 +2585,7 @@ private handler Answer (in pPrompt as String, in pOKLabel as String, in pCancelL
 	put the empty string into tConjunction
 	put the empty string into tCancelClause
 	-- <manage button labels>
-	if ( pCancelLabel is empty and pOKLabel is empty ) then
+		if ( pCancelLabel is empty and pOKLabel is empty ) then
 			-- assume ok and cancel are both to be assigned
 			put "\qOK\q" into tOKClause
 			put "and" into tConjunction

@@ -4,13 +4,25 @@ Extending and improving the LC Nav bar
 
 
 
-## 24.4.4 2022.09.16 (mikey)
+## 2.5.0 2022.09.17 (mikey)
+
+* Developer can directly assign the svg path to an item without having to deal with the name of the icon (which causes it to be looked up and then overwrite the path) using the array:
+
+```
+put the itemArray of widget id 1003 into aTest
+put svgPath into aTest[1]["manual_path"]
+put svgPath2 into aTest[1]["manual_hilited_path"]
+```
+
+
+
+## 2.4.4 2022.09.16 (mikey)
 
 * Added **traditionalMargins** property (boolean, not visible in the property inspector). If *true*, left and right margins are applied to all items in the widget. If *false* then the left margin is only applied to the leftmost item and the right margin to the rightmost item.
 
 
 
-## 24.4.3 2022.09.15 (Ralph)
+## 2.4.3 2022.09.15 (Ralph)
 
 * Bumped icon zoom min and max to 50 and 150
 * icon zoom default 100
