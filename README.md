@@ -2,10 +2,13 @@
 
 Extending and improving the LC Nav bar
 
-## 2.5.3, 2.5.2, 2.5.1 2022.09.18 (mikey)
+
+
+## 2.5.4, 2.5.3, 2.5.2, 2.5.1 2022.09.18 (mikey)
 
 * fix docs for directly assigning a path to an item
 * iconZoom also needs to be checked to see if it exists during onLoad()
+* apparently **onSave()** preserves var types, so when you pull them back with **OnLoad()** you don't have to parse booleans, for example, and if you do, you will throw an error.
 
 
 
