@@ -221,10 +221,10 @@ the icons, and "New Item" for the label.
 **Note:** When setting the <itemArray>, an error will be thrown if the
 new value is not a numerically-keyed array.
 
-**Note:** If you set both an icon_name or hilited_icon_name AND an icon or
-hilited_icon (which are paths), the navRAD will overwrite the paths with the
-ones it obtains by looking up the names. To force the widget to use the paths,
-put empty into the icon_name or hilited_icon_name array elements.
+**Note:** If you set both an *icon_name* or *hilited_icon_name* AND an *icon*
+or *hilited_icon* (which are paths), the navRAD will overwrite the paths with
+the ones it obtains by looking up the names. To force the widget to use a path,
+populate the *manual_path* and the *manual_hilited_path*.
 
 Related: hilitedItemIcons(property), itemIcons(property),
 itemLabels(property), itemNames(property)
