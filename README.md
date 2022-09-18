@@ -3,6 +3,17 @@
 Extending and improving the LC Nav bar
 
 
+## 2.5.2 2022.09.18 (mikey)
+
+* iconZoom also needs to be checked to see if it exists during onLoad()
+
+
+
+## 2.5.1 2022.09.18 (mikey)
+
+* fix docs for directly assigning a path to an item
+
+
 
 ## 2.5.0 2022.09.17 (mikey)
 

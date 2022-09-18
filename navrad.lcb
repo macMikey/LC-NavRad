@@ -835,7 +835,13 @@ end handler
 public handler OnLoad(in pProperties as Array)
 	setNavData(pProperties["items"])
 	put pProperties["selected"] into mSelectedItem
-	put pProperties["iconZoom"] into mIconZoom
+	
+	if "iconZoom" is among the keys of pProperties then
+		put pProperties["iconZoom"] into mIconZoom
+	else
+		put "100" into mIconZoom
+	end if 
+
 	setItemStyle(pProperties["itemStyle"])
 
 	if "showBorder" is among the keys of pProperties then
