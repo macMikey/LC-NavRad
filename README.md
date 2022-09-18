@@ -4,6 +4,14 @@ Extending and improving the LC Nav bar
 
 
 
+## next
+
+* added ***\**menuPick pWhichItem\*****, reporting the item the user tapped on, whether autoHilite is true or not.
+
+* (try to make) edit mode stop ignoring manually-assigned svg's
+
+
+
 ## 2.5.4, 2.5.3, 2.5.2, 2.5.1 2022.09.18 (mikey)
 
 * fix docs for directly assigning a path to an item
