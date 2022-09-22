@@ -1,4 +1,4 @@
-﻿script "com.livecode.pi.navRAD.behavior" with behavior "revInspectorEditorBehavior"
+﻿script "com.livecode.widget.navRad.editor.navData.behavior" #with behavior "revInspectorEditorBehavior"
 on editorInitialize
    set the editMode of widget 1 of me to true
    set the editorMinWidth of me to 300
@@ -69,6 +69,6 @@ end editField
 
 
 on dismissTransient
-  revIDETransientTextChanged
+ revIDETransientTextChanged
 end dismissTransient
 

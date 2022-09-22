@@ -231,7 +231,7 @@ itemLabels(property), itemNames(property)
 
 */
 property itemArray get getNavData set setNavData
-metadata itemArray.editor is "com.livecode.pi.navRAD"
+metadata itemArray.editor is "com.livecode.widget.navRad.editor.navData"
 metadata itemArray.label is "Navigation data"
 
 /**
